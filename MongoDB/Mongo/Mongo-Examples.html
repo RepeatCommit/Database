@@ -1,0 +1,132 @@
+//Подивитись що знаходиться в базі даних
+
+use test
+
+db.users.find() //уся інформація з бази
+
+//додавання обьекта в бд
+db.users.insertOne({name:'Semen',age:35, rating:5})
+
+//пошук по id з функцією objectid
+db.users.find({_id: ObjectId('66e96cfc6089cf3573e2cf57')})
+
+//пошук за значеннями обьекту
+
+db.users.find({age:16})
+
+db.users.find({name:'Semen'})
+
+db.users.find({gender:'male',age:25},
+// {_id:1,name:1}
+
+{name:0} //так виводить без імені
+)
+
+// використання оператора and якщо умова більш складніша для пошуку
+
+db.users.find({
+$and:[
+{rating:2},
+{gender:'female'}
+
+]
+})
+
+//оператор or
+db.users.find({
+$or:[
+{rating:4},
+{gender:'female'}
+
+]
+})
+
+//шукати по послідовності
+
+db.users.find({
+
+age:{
+$in:[12,35,48,16]
+}
+})
+
+//оператор nin те що не входить в перелік
+db.users.find({
+
+age:{
+$nin:[12,35,48,16]
+}
+})
+
+
+//більше менше дорівнює
+
+// gt-більше ніж (gte-більше або =) ($lt lte менше,менше або =)( $ne: не дорівнює) ($eq: дорівнює)
+db.users.find({
+rating:{$gt:4}
+})
+
+//регулярні вирази позначаються /між ними інфо/
+// ^ означає початок строки якщо поставити i то буде без різниці на регістр
+db.users.find({name:/^A/i}) //тут пошук по першій букві a
+
+// пошук по останній букві a
+db.users.find({name:/a$/i})
+
+//пошук по третій букві ( . означає будь-який символ {2} скільки пропустить
+db.users.find({name:/.{2}t/i})
+
+//починається на букву на закінчується на конкртену літеру
+
+// ^ початок з літери k .будь-який символ * скільки завгодно символів a$ осатння літера a
+db.users.find({name:/^k.*a$/i})
+
+//по будь-якій літері яка існує в імені
+
+db.users.find({name:/n/i})
+
+//сортування
+//(rating:1) буде сортувати від найменшого до більшого (rating:-1) від найбільшогго до найменшого
+db.users.find().sort({rating:1})
+
+// сортування по декілька характеристик
+
+db.users.find().sort({rating:-1, age:1})
+
+//update object
+
+db.users.find()
+
+db.users.updateOne(
+
+{_id:ObjectId('66e96f696089cf3573e2cf5a')},
+//unset видалення поля
+{$set:{rating:10}}
+
+)
+// address.house більше 20
+db.users.find({"address.house":{$gt:20}})
+
+// пошук по кількості довжині елемента
+//тут ми визначили що обьект маэ одного з батьків
+
+db.users.find({parents:{$size:1}})
+
+// exists:1 покахує у кого є батьки exists:0 всіх у кого немає
+db.users.find({parents:{$exists:0}})
+
+//додати щось в массив
+// додавання батька Salomon в массив parents
+db.users.updateOne(
+{_id:ObjectId('66e96cfc6089cf3573e2cf57')},
+
+{$push:{parents:'Salomon'}}
+)
+
+db.users.find()
+
+//видалення обʼєкту
+
+db.users.deleteOne(
+{_id:ObjectId('')} //додати в скобки id і обʼєкт видалено
+)
